@@ -107,6 +107,12 @@ public:
      */
     void send_break();
 
+    /* Enables UART peripheral (init pins, clock etc)*/
+    void enable();
+
+    /* Disables UART peripheral (deinit pins, clock)*/
+    void disable();
+
 #if DEVICE_SERIAL_FC
     /** Set the flow control type on the serial port
      *
@@ -121,6 +127,7 @@ public:
 
 protected:
     SerialBase(PinName tx, PinName rx);
+    SerialBase(PinName tx, PinName rx, bool noinit);
     virtual ~SerialBase() {
     }
 
@@ -130,6 +137,8 @@ protected:
     serial_t        _serial;
     FunctionPointer _irq[2];
     int             _baud;
+    PinName         _tx;
+    PinName         _rx;
 };
 
 } // namespace mbed

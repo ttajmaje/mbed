@@ -15,14 +15,36 @@
  */
 #include "SerialBase.h"
 #include "wait_api.h"
+#include "pinmap.h"
 
 #if DEVICE_SERIAL
 
 namespace mbed {
 
-SerialBase::SerialBase(PinName tx, PinName rx) : _serial(), _baud(9600) {
-    serial_init(&_serial, tx, rx);
+SerialBase::SerialBase(PinName tx, PinName rx) : _serial(), _baud(9600), _tx(tx), _rx(rx) {
+    serial_init(&_serial, _tx, _rx);
     serial_irq_handler(&_serial, SerialBase::_irq_handler, (uint32_t)this);
+}
+
+SerialBase::SerialBase(PinName tx, PinName rx, bool noinit) : _serial(), _baud(9600), _tx(tx), _rx(rx) {
+    if(noinit == true){
+        //Initalize UART pins to a safe state (HiZ all)
+        pin_function(_tx, STM_PIN_DATA(STM_MODE_INPUT, GPIO_NOPULL, 0));
+        pin_function(_rx, STM_PIN_DATA(STM_MODE_INPUT, GPIO_NOPULL, 0));
+    }
+    else{
+        serial_init(&_serial, _tx, _rx);
+        serial_irq_handler(&_serial, SerialBase::_irq_handler, (uint32_t)this); 
+    }
+}
+
+void SerialBase::enable(){
+    serial_init(&_serial, _tx, _rx);
+    serial_irq_handler(&_serial, SerialBase::_irq_handler, (uint32_t)this);
+}
+
+void SerialBase::disable(){
+    serial_free(&_serial);
 }
 
 void SerialBase::baud(int baudrate) {

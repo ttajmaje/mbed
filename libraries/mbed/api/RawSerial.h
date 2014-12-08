@@ -56,7 +56,7 @@ public:
      *  @note
      *    Either tx or rx may be specified as NC if unused
      */
-    RawSerial(PinName tx, PinName rx);
+    RawSerial(PinName tx, PinName rx, bool noinit = false);
 
     /** Write a char to the serial port
      *
