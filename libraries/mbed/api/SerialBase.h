@@ -139,6 +139,7 @@ protected:
     int             _baud;
     PinName         _tx;
     PinName         _rx;
+    bool            _initialized;
 };
 
 } // namespace mbed

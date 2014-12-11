@@ -28,11 +28,13 @@ SerialBase::SerialBase(PinName tx, PinName rx) : _serial(), _baud(9600), _tx(tx)
 
 SerialBase::SerialBase(PinName tx, PinName rx, bool noinit) : _serial(), _baud(9600), _tx(tx), _rx(rx) {
     if(noinit == true){
+        _initialized = false;
         //Initalize UART pins to a safe state (HiZ all)
         pin_function(_tx, STM_PIN_DATA(STM_MODE_INPUT, GPIO_NOPULL, 0));
         pin_function(_rx, STM_PIN_DATA(STM_MODE_INPUT, GPIO_NOPULL, 0));
     }
     else{
+        _initialized = true;
         serial_init(&_serial, _tx, _rx);
         serial_irq_handler(&_serial, SerialBase::_irq_handler, (uint32_t)this); 
     }
@@ -41,10 +43,14 @@ SerialBase::SerialBase(PinName tx, PinName rx, bool noinit) : _serial(), _baud(9
 void SerialBase::enable(){
     serial_init(&_serial, _tx, _rx);
     serial_irq_handler(&_serial, SerialBase::_irq_handler, (uint32_t)this);
+    _initialized = true;
 }
 
 void SerialBase::disable(){
-    serial_free(&_serial);
+    if(_initialized){
+        serial_free(&_serial);
+        _initialized = false;
+    }
 }
 
 void SerialBase::baud(int baudrate) {
