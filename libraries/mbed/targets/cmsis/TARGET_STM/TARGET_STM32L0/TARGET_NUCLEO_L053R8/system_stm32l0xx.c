@@ -126,8 +126,10 @@
   */
 
 /* Select the clock sources (other than HSI) to start with (0=OFF, 1=ON) */
-#define USE_PLL_HSE_EXTC (1) /* Use external clock */
-#define USE_PLL_HSE_XTAL (1) /* Use external xtal */
+
+// DISABLE EXTERNAL CLOCKS FOR EGSM
+#define USE_PLL_HSE_EXTC (0) /* Use external clock */
+#define USE_PLL_HSE_XTAL (0) /* Use external xtal */
 
 /**
   * @}
@@ -428,6 +430,7 @@ uint8_t SetSysClock_PLL_HSI(void)
   RCC_OscInitStruct.PLL.PLLSource       = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLMUL          = RCC_PLLMUL_4;
   RCC_OscInitStruct.PLL.PLLDIV          = RCC_PLLDIV_2;
+  RCC_OscInitStruct.HSICalibrationValue = 16;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     return 0; // FAIL

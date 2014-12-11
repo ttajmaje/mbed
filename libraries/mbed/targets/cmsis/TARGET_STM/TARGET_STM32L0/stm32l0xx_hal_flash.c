@@ -662,7 +662,7 @@ static void FLASH_SetErrorCode(void)
   *         is the start address of a page (multiple of 256 bytes).
   * @retval HAL_StatusTypeDef HAL Status
   */
-void FLASH_Erase_Page(uint32_t Page_Address)
+__attribute__( (noinline, long_call, section(".data") ) ) void FLASH_Erase_Page(uint32_t Page_Address)
 {
   /* Set the ERASE bit */
     FLASH->PECR |= FLASH_PECR_ERASE;
@@ -681,7 +681,7 @@ void FLASH_Erase_Page(uint32_t Page_Address)
   * @param  Data: specifies the data to be programmed.
   * @retval None
   */
-static void FLASH_Program_Word(uint32_t Address, uint32_t Data)
+__attribute__( (noinline, long_call, section(".data") ) )void FLASH_Program_Word(uint32_t Address, uint32_t Data)
 {
   /* Check the parameters */
   assert_param(IS_FLASH_PROGRAM_ADDRESS(Address));
